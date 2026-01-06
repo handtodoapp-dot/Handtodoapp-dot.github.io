@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HandToDo - Beautiful Task Management for iOS & Mac</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-start: #667eea;
+            --primary-end: #764ba2;
+            --accent-start: #4facfe;
+            --accent-end: #00f2fe;
+            --green-start: #56ab2f;
+            --green-end: #a8e063;
+            --orange-start: #fa709a;
+            --orange-end: #fee140;
+            --navy: #0f1419;
+            --navy-light: #1a1f2e;
+            --text-primary: #0f1419;
+            --text-secondary: #525866;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient background */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            opacity: 0.05;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-start);
+        }
+
+        .nav-cta {
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            color: white !important;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 5% 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end), var(--accent-start));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-text p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .platform-badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        .platform-badge {
+            padding: 0.5rem 1.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 50px;
+            font-weight: 600;
+            color: var(--primary-start);
+            font-size: 0.95rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .btn-primary {
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            padding: 1.2rem 3rem;
+            background: white;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .devices-showcase {
+            margin-top: 4rem;
+            position: relative;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .devices-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .device {
+            position: relative;
+            filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.2));
+            transition: all 0.3s ease;
+        }
+
+        .device:hover {
+            transform: translateY(-10px);
+        }
+
+        .device-ipad {
+            width: 400px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .device-iphone {
+            width: 200px;
+            animation: float 6s ease-in-out 0.5s infinite;
+        }
+
+        .device-mac {
+            width: 500px;
+            animation: float 6s ease-in-out 1s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 4rem 5%;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+        }
+
+        .stats-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+
+        .stat-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Platforms Section */
+        .platforms {
+            padding: 6rem 5%;
+            background: white;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-header p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .platforms-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .platform-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 3rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .platform-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .platform-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .platform-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .platform-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .platform-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .platform-features {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .platform-feature {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 5%;
+            background: linear-gradient(180deg, white 0%, #f8f9fa 100%);
+        }
+
+        .features-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 30px;
+            padding: 3rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .feature-icon.gradient-1 {
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+        }
+
+        .feature-icon.gradient-2 {
+            background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+        }
+
+        .feature-icon.gradient-3 {
+            background: linear-gradient(135deg, var(--green-start), var(--green-end));
+        }
+
+        .feature-icon.gradient-4 {
+            background: linear-gradient(135deg, var(--orange-start), var(--orange-end));
+        }
+
+        .feature-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* Screenshots Section */
+        .screenshots {
+            padding: 6rem 5%;
+            background: white;
+        }
+
+        .screenshots-carousel {
+            max-width: 1400px;
+            margin: 3rem auto 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .screenshot-card {
+            background: white;
+            border-radius: 30px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .screenshot-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+        }
+
+        .screenshot-img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .screenshot-device {
+            font-size: 2rem;
+        }
+
+        .screenshot-label {
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 6rem 5%;
+            background: linear-gradient(180deg, white 0%, #f8f9fa 100%);
+        }
+
+        .testimonials-grid {
+            max-width: 1400px;
+            margin: 3rem auto 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 30px;
+            padding: 2.5rem;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+        }
+
+        .author-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .author-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 6rem 5%;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            text-align: center;
+            color: white;
+        }
+
+        .cta h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta p {
+            font-size: 1.35rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-white {
+            padding: 1.2rem 3rem;
+            background: white;
+            color: var(--primary-start);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-white:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--navy);
+            color: white;
+            padding: 3rem 5%;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.7;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .hero-text h1 {
+                font-size: 3.5rem;
+            }
+
+            .devices-container {
+                gap: 1rem;
+            }
+
+            .device-mac {
+                width: 400px;
+            }
+
+            .device-ipad {
+                width: 300px;
+            }
+
+            .device-iphone {
+                width: 150px;
+            }
+
+            .features-grid,
+            .platforms-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .screenshots-carousel,
+            .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 5%;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-text p {
+                font-size: 1.1rem;
+            }
+
+            .platform-badges {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary, .btn-secondary, .btn-white {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .devices-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .device-mac {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .device-ipad {
+                width: 80%;
+                max-width: 300px;
+            }
+
+            .device-iphone {
+                width: 50%;
+                max-width: 180px;
+            }
+
+            .section-header h2 {
+                font-size: 2.5rem;
+            }
+
+            .platforms-grid,
+            .features-grid,
+            .screenshots-carousel,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .cta h2 {
+                font-size: 2.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">HandToDo</div>
+        <div class="nav-links">
+            <a href="#platforms">Platforms</a>
+            <a href="#features">Features</a>
+            <a href="#screenshots">Screenshots</a>
+            <a href="#download" class="nav-cta">Download Free</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Your thoughts, beautifully organized</h1>
+                <p>The most elegant task manager for Apple devices. Write naturally with Apple Pencil, organize effortlessly across all your devices, achieve more.</p>
+                
+                <div class="platform-badges">
+                    <div class="platform-badge">📱 iPhone</div>
+                    <div class="platform-badge">📱 iPad</div>
+                    <div class="platform-badge">💻 Mac</div>
+                </div>
+
+                <div class="hero-buttons">
+                    <a href="#download" class="btn-primary">
+                        <span>📱</span>
+                        Download for iOS & Mac
+                    </a>
+                    <a href="#features" class="btn-secondary">
+                        <span>✨</span>
+                        Explore Features
+                    </a>
+                </div>
+            </div>
+
+            <div class="devices-showcase">
+                <div class="devices-container">
+                    <!-- iPhone Mockup -->
+                    <div class="device device-iphone">
+                        <svg viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="grad-iphone" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <rect x="10" y="10" width="180" height="380" rx="25" fill="#1a1a2e" />
+                            <rect x="15" y="15" width="170" height="370" rx="20" fill="/Handtodo-iphone.png" />
+               <defs>
+        <clipPath id="rounded-image">
+            <rect x="15" y="15" width="170" height="370" rx="20" ry="20" />
+        </clipPath>
+    </defs>
+
+    <image
+        href="/Handtodo-iphone.png"
+        x="15"
+        y="15"
+        width="170"
+        height="370"
+        preserveAspectRatio="xMidYMid slice"
+        clip-path="url(#rounded-image)"
+    />
+                         <!--   <rect x="25" y="40" width="60" height="15" rx="7" fill="white" opacity="0.9" />
+                            <circle cx="165" cy="47" r="8" fill="white" opacity="0.9" />
+                            <rect x="25" y="70" width="150" height="40" rx="10" fill="white" opacity="0.95" />
+                            <rect x="25" y="120" width="150" height="40" rx="10" fill="white" opacity="0.95" />
+                            <rect x="25" y="170" width="150" height="40" rx="10" fill="white" opacity="0.95" />
+                            <rect x="25" y="220" width="150" height="40" rx="10" fill="white" opacity="0.95" /> -->
+                        </svg>
+                    </div>
+
+                    <!-- iPad Mockup -->
+                    <div class="device device-ipad">
+                        <svg viewBox="0 0 400 550" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="grad-ipad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <rect x="15" y="15" width="370" height="520" rx="30" fill="#1a1a2e" />
+                            <rect x="25" y="25" width="350" height="500" rx="25" fill="" />
+                                           <defs>
+        <clipPath id="rounded-image">
+            <rect x="25" y="25" width="350" height="500" rx="25"/>
+        </clipPath>
+    </defs>
+
+    <image
+        href="/Handtodo-ipad.png"
+        x="25"
+        y="25"
+        width="350"
+        height="500"
+        preserveAspectRatio="xMidYMid slice"
+        clip-path="url(#rounded-image)"
+    />
+                            <!--<rect x="45" y="55" width="120" height="25" rx="12" fill="white" opacity="0.9" />
+                            <circle cx="335" cy="67" r="12" fill="white" opacity="0.9" />
+                            <rect x="45" y="110" width="310" height="70" rx="15" fill="white" opacity="0.95" />
+                            <rect x="45" y="200" width="310" height="70" rx="15" fill="white" opacity="0.95" />
+                            <rect x="45" y="290" width="310" height="70" rx="15" fill="white" opacity="0.95" />
+                            <rect x="45" y="380" width="310" height="70" rx="15" fill="white" opacity="0.95" /> -->
+                        </svg>
+                    </div>
+
+                    <!-- Mac Mockup -->
+                    <div class="device device-mac">
+                        <svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="grad-mac" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#56ab2f;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#a8e063;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Screen -->
+                            <rect x="20" y="10" width="560" height="340" rx="15" fill="#1a1a2e" />
+                            <rect x="30" y="20" width="540" height="320" rx="10" fill="url(#grad-mac)" />
+                                                                       <defs>
+        <clipPath id="rounded-image">
+            <rect x="20" y="10" width="560" height="340" rx="15"/>
+        </clipPath>
+    </defs>
+
+    <image
+        href="/Handtodo-mac.png"
+        x="15"
+        y="10"
+        width="570"
+        height="350"
+        preserveAspectRatio="xMidYMid slice"
+        clip-path="url(#rounded-image)"
+    />
+                            <!-- Base
+                            <path d="M 200 350 L 400 350 L 420 365 L 180 365 Z" fill="#1a1a2e" />
+                            <rect x="150" y="365" width="300" height="8" rx="4" fill="#1a1a2e" />
+                            <!-- Content
+                            <rect x="50" y="50" width="150" height="30" rx="15" fill="white" opacity="0.9" />
+                            <circle cx="520" cy="65" r="15" fill="white" opacity="0.9" />
+                            <rect x="50" y="100" width="240" height="70" rx="15" fill="white" opacity="0.95" />
+                            <rect x="310" y="100" width="240" height="220" rx="15" fill="white" opacity="0.95" />
+                            <rect x="50" y="190" width="240" height="70" rx="15" fill="white" opacity="0.95" />
+                            <rect x="50" y="280" width="240" height="40" rx="10" fill="white" opacity="0.95" /> -->
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Apple Platforms</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">60%</div>
+                <div class="stat-label">Faster Performance</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">Zero</div>
+                <div class="stat-label">Lag Writing</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Data Synced</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platforms Section -->
+    <section id="platforms" class="platforms">
+        <div class="section-header">
+            <h2>Perfect on every device</h2>
+            <p>Native experiences crafted specifically for iPhone, iPad, and Mac.</p>
+        </div>
+        <div class="platforms-grid">
+            <div class="platform-card">
+                <div class="platform-icon">📱</div>
+                <h3>iPhone</h3>
+                <p>Quick capture on the go. Your tasks always in your pocket, beautifully optimized for one-handed use.</p>
+                <div class="platform-features">
+                    <div class="platform-feature">✓ Quick task creation</div>
+                    <div class="platform-feature">✓ Instant sync across devices</div>
+                    <div class="platform-feature">✓ Widget support</div>
+                </div>
+            </div>
+            <div class="platform-card">
+                <div class="platform-icon">📱</div>
+                <h3>iPad</h3>
+                <p>Write naturally with Apple Pencil. Full-screen Kanban and Calendar views for immersive productivity.</p>
+                <div class="platform-features">
+                    <div class="platform-feature">✓ Zero-lag Apple Pencil</div>
+                    <div class="platform-feature">✓ Full-screen views</div>
+                    <div class="platform-feature">✓ Split View support</div>
+                </div>
+            </div>
+            <div class="platform-card">
+                <div class="platform-icon">💻</div>
+                <h3>Mac</h3>
+                <p>Powerful desktop experience. Perfect for managing large projects.</p>
+                <div class="platform-features">
+                    <div class="platform-feature">✓ Native menu bar</div>
+                    <div class="platform-feature">✓ Multi-window support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="section-header">
+            <h2>Designed for perfection</h2>
+            <p>Every detail crafted to give you the smoothest, most beautiful task management experience.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon gradient-1">✍️</div>
+                <h3>Ultra-Responsive Apple Pencil</h3>
+                <p>Write with zero lag on iPad. Instant ink response that feels like real paper. Your handwriting appears everywhere immediately.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon gradient-2">🎨</div>
+                <h3>Beautiful Gradients</h3>
+                <p>Vibrant color-coded status indicators and stunning dark mode with deep purple/blue tones across all devices.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon gradient-3">☁️</div>
+                <h3>iCloud Sync</h3>
+                <p>Seamless sync across iPhone, iPad, and Mac. Start on one device, finish on another. Your data is always up-to-date.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon gradient-4">🚀</div>
+                <h3>Lightning Fast</h3>
+                <p>60% faster navigation with optimized memory and smooth 60fps animations on all platforms.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon gradient-1">🛡️</div>
+                <h3>Rock-Solid Stability</h3>
+                <p>11 layers of protection. Never lose a stroke. Bulletproof reliability you can trust on every device.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon gradient-2">📊</div>
+                <h3>Powerful Organization</h3>
+                <p>Kanban boards, calendar views, color coding, and instant search. Stay organized your way.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section id="screenshots" class="screenshots">
+        <div class="section-header">
+            <h2>See it in action</h2>
+            <p>Beautiful on every screen, magical with Apple Pencil.</p>
+        </div>
+        <div class="screenshots-carousel">
+            <div class="screenshot-card">
+                <div class="screenshot-img">
+                    <div class="screenshot-device">📱</div>
+                    <div>iPhone Dashboard</div>
+                </div>
+                <div class="screenshot-label">Quick Overview</div>
+            </div>
+            <div class="screenshot-card">
+                <div class="screenshot-img">
+                    <div class="screenshot-device">📱</div>
+                    <div>iPad + Apple Pencil</div>
+                </div>
+                <div class="screenshot-label">Natural Handwriting</div>
+            </div>
+            <div class="screenshot-card">
+                <div class="screenshot-img">
+                    <div class="screenshot-device">💻</div>
+                    <div>Mac Kanban</div>
+                </div>
+                <div class="screenshot-label">Full-Screen Productivity</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="section-header">
+            <h2>Loved by thousands</h2>
+            <p>See what people are saying about HandToDo.</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-text">"Seamless across all my devices. I can start a task on my iPhone and finish it on my Mac. The sync is instant and flawless."</div>
+                <div class="testimonial-author">
+                    <div class="author-avatar"></div>
+                    <div class="author-info">
+                        <h4>Sarah Chen</h4>
+                        <p>Product Designer</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-text">"The Apple Pencil support on iPad is phenomenal. Zero lag, instant response. Best handwriting experience I've found in any app."</div>
+                <div class="testimonial-author">
+                    <div class="author-avatar"></div>
+                    <div class="author-info">
+                        <h4>Marcus Rivera</h4>
+                        <p>Software Engineer</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-text">"Love using the full-screen Kanban on my Mac. This is my new productivity hub."</div>
+                <div class="testimonial-author">
+                    <div class="author-avatar"></div>
+                    <div class="author-info">
+                        <h4>Emma Thompson</h4>
+                        <p>Project Manager</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="download" class="cta">
+        <h2>Ready to get organized?</h2>
+        <p>Join thousands using HandToDo across iPhone, iPad, and Mac.</p>
+        <div class="cta-buttons">
+            <a href="#" class="btn-white">
+                <span>📱</span>
+                Download for iOS
+            </a>
+            <a href="#" class="btn-white">
+                <span>💻</span>
+                Download for Mac
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2024 HandToDo. Crafted with ❤️ for productivity enthusiasts.</p>
+        <p>Available on iPhone, iPad, and Mac.</p>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Support</a>
+            <a href="#">Contact</a>
+        </div>
+    </footer>
+</body>
+</html>
